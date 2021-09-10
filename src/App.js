@@ -1,25 +1,31 @@
-import logo from './logo.svg';
-import './App.css';
-
-function App() {
+import 'antd/dist/antd.css';
+import CustomLayout from './containers/layout';
+import { BrowserRouter as Router } from 'react-router-dom';
+import BaseRouter from './routes';
+import { connect } from 'react-redux';
+import * as actions from './store/actions/auth';
+function App(props) {
+  props.onTryAutoSignup();
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div>
+      <Router>
+          <CustomLayout {...props}>
+            <BaseRouter />
+          </CustomLayout>
+      </Router>
     </div>
   );
 }
 
-export default App;
+const mapStateToProps = state => {
+    return {
+        isAuthenticated: state.token !== null,
+    }
+}
+
+const mapDispatchToProps = dispatch => {
+    return {
+        onTryAutoSignup: () => dispatch(actions.authCheckState())
+    }
+}
+export default connect(mapStateToProps, mapDispatchToProps)(App);
